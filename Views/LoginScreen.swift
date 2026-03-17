@@ -4,19 +4,24 @@ struct LoginScreen: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var isPasswordVisible: Bool = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
     
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: isCompact ? 20 : 30) {
                     Spacer()
                     
                     // Title
                     Text("This is a login screen created from Planix")
-                        .font(.largeTitle)
+                        .font(isCompact ? .largeTitle : .system(size: 40, weight: .bold))
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal)
+                        .padding(.horizontal, isCompact ? 20 : 60)
                     
                     Spacer()
                     
@@ -31,7 +36,7 @@ struct LoginScreen: View {
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, isCompact ? 20 : geometry.size.width * 0.2)
                     
                     // Password field
                     VStack(alignment: .leading, spacing: 8) {
@@ -53,7 +58,7 @@ struct LoginScreen: View {
                         }
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, isCompact ? 20 : geometry.size.width * 0.2)
                     
                     // Forgot password button
                     HStack {
@@ -64,7 +69,7 @@ struct LoginScreen: View {
                         .font(.footnote)
                         .foregroundColor(.blue)
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, isCompact ? 20 : geometry.size.width * 0.2)
                     
                     // Login button
                     Button(action: {
@@ -80,7 +85,7 @@ struct LoginScreen: View {
                             .background(Color.blue)
                             .cornerRadius(10)
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, isCompact ? 20 : geometry.size.width * 0.3)
                     .disabled(email.isEmpty || password.isEmpty)
                     .opacity(email.isEmpty || password.isEmpty ? 0.6 : 1.0)
                     
@@ -102,13 +107,31 @@ struct LoginScreen: View {
             }
         }
         .navigationBarTitle("Login", displayMode: .inline)
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
     }
 }
 
 struct LoginScreen_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            LoginScreen()
+        Group {
+            NavigationView {
+                LoginScreen()
+            }
+            .previewDevice("iPhone 14")
+            .previewDisplayName("iPhone 14")
+            
+            NavigationView {
+                LoginScreen()
+            }
+            .previewDevice("iPad Pro (12.9-inch) (6th generation)")
+            .previewDisplayName("iPad Pro")
+            
+            NavigationView {
+                LoginScreen()
+            }
+            .previewDevice("iPhone 14")
+            .previewDisplayName("Dark Mode")
+            .preferredColorScheme(.dark)
         }
     }
 }
