@@ -12,7 +12,7 @@ import SwiftData
 struct ToDosApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            LoginView()
         }
         .modelContainer(for: ReminderList.self)
     }
